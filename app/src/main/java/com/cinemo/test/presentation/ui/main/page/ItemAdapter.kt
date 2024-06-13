@@ -11,7 +11,10 @@ import com.cinemo.test.databinding.ItemListVerticalBinding
 import com.cinemo.test.domain.GRID_TYPE
 import com.cinemo.test.domain.Item
 
-class ItemAdapter(private val displayStyle: String) : ListAdapter<Item, RecyclerView.ViewHolder>(DiffCallback()) {
+class ItemAdapter(
+    private val displayStyle: String,
+    private val itemClickListener: (item: Item) -> Unit
+) : ListAdapter<Item, RecyclerView.ViewHolder>(DiffCallback()) {
 
     companion object {
         private const val VIEW_TYPE_VERTICAL = 1
@@ -54,23 +57,32 @@ class ItemAdapter(private val displayStyle: String) : ListAdapter<Item, Recycler
         }
     }
 
-    class ItemViewHolder(private val binding: ItemListBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ItemViewHolder(private val binding: ItemListBinding) : RecyclerView.ViewHolder(binding.root) {
+
         fun bind(item: Item) {
             binding.title.text = item.title
             binding.subtitle.text = item.subtitle
             Glide.with(itemView.context)
                 .load(item.thumbnail)
                 .into(binding.thumbnail)
+
+            binding.root.setOnClickListener {
+                itemClickListener.invoke(item)
+            }
         }
     }
 
-    class ItemVerticalViewHolder(private val binding: ItemListVerticalBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ItemVerticalViewHolder(private val binding: ItemListVerticalBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Item) {
             binding.title.text = item.title
             binding.subtitle.text = item.subtitle
             Glide.with(itemView.context)
                 .load(item.thumbnail)
                 .into(binding.thumbnail)
+
+            binding.root.setOnClickListener {
+                itemClickListener.invoke(item)
+            }
         }
     }
 }

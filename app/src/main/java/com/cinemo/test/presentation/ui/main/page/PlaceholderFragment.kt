@@ -1,12 +1,14 @@
 package com.cinemo.test.presentation.ui.main.page
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.cinemo.test.R
 import com.cinemo.test.databinding.FragmentMainBinding
 import com.cinemo.test.domain.GRID_TYPE
 import com.cinemo.test.domain.Item
@@ -39,7 +41,13 @@ class PlaceholderFragment : Fragment() {
                 recyclerView.layoutManager = LinearLayoutManager(context)
             }
 
-            val adapter = ItemAdapter(media.content?.displayStyle ?: GRID_TYPE)
+            val adapter = ItemAdapter(media.content?.displayStyle ?: GRID_TYPE) { item ->
+//                val fragment = newInstance(item) // Pass item ID or other data as needed
+//                parentFragmentManager.beginTransaction()
+//                    .replace(R.id.view_pager, fragment)
+//                    .addToBackStack(null)
+//                    .commit()
+            }
             recyclerView.adapter = adapter
             adapter.submitList(it.content?.items ?: emptyList())
         }
