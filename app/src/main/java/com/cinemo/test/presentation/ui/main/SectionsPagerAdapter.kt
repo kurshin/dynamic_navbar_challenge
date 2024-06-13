@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.cinemo.test.domain.Item
+import com.cinemo.test.presentation.ui.main.page.PlaceholderFragment
 
 class SectionsPagerAdapter(
     private val context: Context,
@@ -13,7 +14,7 @@ class SectionsPagerAdapter(
 ) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     override fun getItem(position: Int): Fragment {
-        return PlaceholderFragment.newInstance(items[position].id)
+        return PlaceholderFragment.newInstance(items[position])
     }
 
     override fun getPageTitle(position: Int): CharSequence? {

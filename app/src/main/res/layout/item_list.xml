@@ -7,8 +7,8 @@
     android:layout_height="match_parent"
     tools:context=".presentation.ui.main.page.PlaceholderFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <TextView
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/activity_horizontal_margin"

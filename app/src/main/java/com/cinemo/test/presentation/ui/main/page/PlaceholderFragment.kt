@@ -1,35 +1,29 @@
-package com.cinemo.test.presentation.ui.main
+package com.cinemo.test.presentation.ui.main.page
 
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.cinemo.test.databinding.FragmentMainBinding
+import com.cinemo.test.domain.Item
+import com.cinemo.test.presentation.ui.main.page.ItemAdapter
+import com.cinemo.test.presentation.ui.main.page.PageViewModel
 
-/**
- * A placeholder fragment containing a simple view.
- */
 class PlaceholderFragment : Fragment() {
 
     private lateinit var pageViewModel: PageViewModel
     private var _binding: FragmentMainBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        pageViewModel = ViewModelProvider(this)[PageViewModel::class.java].apply {
-            setIndex(0)
-            val pageId = arguments?.getString(ARG_SECTION_NUMBER) ?: "0"
-            Log.i("1111", "pageId = $pageId")
-        }
+        pageViewModel = ViewModelProvider(this)[PageViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -40,21 +34,32 @@ class PlaceholderFragment : Fragment() {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        val textView: TextView = binding.sectionLabel
-        pageViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
+        val recyclerView = binding.recyclerView
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        val adapter = ItemAdapter()
+        recyclerView.adapter = adapter
+
+        pageViewModel.item.observe(viewLifecycleOwner) {
+            adapter.submitList(it.content?.items ?: emptyList())
+        }
+
+        // Retrieve the item from arguments and set it to the ViewModel
+        arguments?.getSerializable(ARG_ITEM)?.let {
+            Log.i("1111", "it = $it")
+            pageViewModel.setItem(it as Item)
+        }
+
         return root
     }
 
     companion object {
 
-        private const val ARG_SECTION_NUMBER = "section_number"
+        private const val ARG_ITEM = "item"
         @JvmStatic
-        fun newInstance(sectionNumber: String): PlaceholderFragment {
+        fun newInstance(item: Item): PlaceholderFragment {
             return PlaceholderFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_SECTION_NUMBER, sectionNumber)
+                    putSerializable(ARG_ITEM, item)
                 }
             }
         }
