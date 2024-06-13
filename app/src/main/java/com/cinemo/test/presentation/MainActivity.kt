@@ -1,13 +1,12 @@
 package com.cinemo.test.presentation
 
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.cinemo.data_parser.CinemoParser
 import com.cinemo.test.data.AssetFileReader
 import com.cinemo.test.data.MediaDataRepository
@@ -18,6 +17,7 @@ import com.cinemo.data_parser.Result
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
     private val viewModel: MainViewModel by viewModels {
         MainViewModelFactory(
             MediaDataRepository(
@@ -35,17 +35,11 @@ class MainActivity : AppCompatActivity() {
 
         setUpMediaData()
 
-        val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
+        sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager, emptyList())
         val viewPager: ViewPager = binding.viewPager
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = binding.tabs
         tabs.setupWithViewPager(viewPager)
-        val fab: FloatingActionButton = binding.fab
-
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
 
         viewModel.loadMediaData("media.json")
     }
@@ -55,13 +49,13 @@ class MainActivity : AppCompatActivity() {
             when (result) {
                 is Result.Success -> {
                     val mediaData = result.data
-                    Log.i("1111", "Media Data: $mediaData")
+                    sectionsPagerAdapter.updateItems(mediaData.items)
                 }
                 is Result.Error -> {
-                    // Handle the error case
-                    Log.i("1111", "Error: ${result.exception.message}")
+                    Toast.makeText(this, "Error: ${result.exception.message}", Toast.LENGTH_SHORT).show()
                 }
             }
+            binding.progressBar.isVisible = false
         }
     }
 }
