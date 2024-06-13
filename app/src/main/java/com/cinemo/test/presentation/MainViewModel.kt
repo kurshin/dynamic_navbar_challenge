@@ -4,21 +4,33 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import com.cinemo.test.data.MediaDataRepository
+import com.cinemo.test.domain.MediaData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import com.cinemo.data_parser.Result
 
-class MainViewModel : ViewModel() {
+class MainViewModel(private val repository: MediaDataRepository) : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is the main view model"
+    private val _mediaData = MutableLiveData<Result<MediaData>>()
+    val mediaData: LiveData<Result<MediaData>> get() = _mediaData
+
+    fun loadMediaData(fileName: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = repository.getMediaData(fileName)
+            _mediaData.postValue(result)
+        }
     }
-    val text: LiveData<String> = _text
-
-    // Add other LiveData or business logic here
 }
 
-class MainViewModelFactory : ViewModelProvider.Factory {
+class MainViewModelFactory(
+    private val repository: MediaDataRepository
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            return MainViewModel() as T
+            @Suppress("UNCHECKED_CAST")
+            return MainViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
