@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Media Center"
 include(":app")
+include(":data_parser")
