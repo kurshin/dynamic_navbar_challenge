@@ -5,23 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cinemo.test.databinding.FragmentMainBinding
+import com.cinemo.test.domain.GRID_TYPE
 import com.cinemo.test.domain.Item
 
 class PlaceholderFragment : Fragment() {
 
-    private lateinit var pageViewModel: PageViewModel
     private var _binding: FragmentMainBinding? = null
-
-    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        pageViewModel = ViewModelProvider(this)[PageViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -34,23 +30,18 @@ class PlaceholderFragment : Fragment() {
 
         val recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
-        val adapter = ItemAdapter()
-        recyclerView.adapter = adapter
 
-        pageViewModel.item.observe(viewLifecycleOwner) {
-            adapter.submitList(it.content?.items ?: emptyList())
-        }
-
-        // Retrieve the item from arguments and set it to the ViewModel
         arguments?.getSerializable(ARG_ITEM)?.let {
             val media = it as Item
-//            if (media.content?.displayStyle == "grid") {
-//                recyclerView.layoutManager = GridLayoutManager(context, 2)
-//            } else {
-//                recyclerView.layoutManager = LinearLayoutManager(context)
-//            }
+            if (media.content?.displayStyle == GRID_TYPE) {
+                recyclerView.layoutManager = GridLayoutManager(context, 2)
+            } else {
+                recyclerView.layoutManager = LinearLayoutManager(context)
+            }
 
-            pageViewModel.setItem(media)
+            val adapter = ItemAdapter(media.content?.displayStyle ?: GRID_TYPE)
+            recyclerView.adapter = adapter
+            adapter.submitList(it.content?.items ?: emptyList())
         }
 
         return root

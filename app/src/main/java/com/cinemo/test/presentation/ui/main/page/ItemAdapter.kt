@@ -7,27 +7,40 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.cinemo.test.databinding.ItemListBinding
+import com.cinemo.test.databinding.ItemListVerticalBinding
+import com.cinemo.test.domain.GRID_TYPE
 import com.cinemo.test.domain.Item
 
-class ItemAdapter : ListAdapter<Item, ItemAdapter.ItemViewHolder>(DiffCallback()) {
+class ItemAdapter(private val displayStyle: String) : ListAdapter<Item, RecyclerView.ViewHolder>(DiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val binding = ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ItemViewHolder(binding)
+    companion object {
+        private const val VIEW_TYPE_VERTICAL = 1
+        private const val VIEW_TYPE_HORIZONTAL = 2
     }
 
-    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+    override fun getItemViewType(position: Int): Int {
+        return if (displayStyle == GRID_TYPE) VIEW_TYPE_VERTICAL else VIEW_TYPE_HORIZONTAL
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            VIEW_TYPE_VERTICAL -> {
+                val binding = ItemListVerticalBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                ItemVerticalViewHolder(binding)
+            }
+            VIEW_TYPE_HORIZONTAL -> {
+                val binding = ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                ItemViewHolder(binding)
+            }
+            else -> throw IllegalArgumentException("Invalid view type")
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item)
-    }
-
-    class ItemViewHolder(private val binding: ItemListBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Item) {
-            binding.title.text = item.title
-            binding.subtitle.text = item.subtitle
-            Glide.with(itemView.context)
-                .load(item.thumbnail)
-                .into(binding.thumbnail)
+        when (holder) {
+            is ItemViewHolder -> holder.bind(item)
+            is ItemVerticalViewHolder -> holder.bind(item)
         }
     }
 
@@ -40,4 +53,26 @@ class ItemAdapter : ListAdapter<Item, ItemAdapter.ItemViewHolder>(DiffCallback()
             return oldItem == newItem
         }
     }
+
+    class ItemViewHolder(private val binding: ItemListBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Item) {
+            binding.title.text = item.title
+            binding.subtitle.text = item.subtitle
+            Glide.with(itemView.context)
+                .load(item.thumbnail)
+                .into(binding.thumbnail)
+        }
+    }
+
+    class ItemVerticalViewHolder(private val binding: ItemListVerticalBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Item) {
+            binding.title.text = item.title
+            binding.subtitle.text = item.subtitle
+            Glide.with(itemView.context)
+                .load(item.thumbnail)
+                .into(binding.thumbnail)
+        }
+    }
 }
+
+

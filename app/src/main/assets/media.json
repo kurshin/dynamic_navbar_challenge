@@ -6,7 +6,7 @@
             "id": "home",
             "thumbnail": "https://cdn0.iconfinder.com/data/icons/typicons-2/24/home-128.png",
             "content": {
-                "displayStyle": "grid",
+                "displayStyle": "list",
                 "items": [
                     {
                         "title": "Feier Jesus 1-20",
