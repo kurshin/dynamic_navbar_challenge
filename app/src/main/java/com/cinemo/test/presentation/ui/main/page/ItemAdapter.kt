@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.cinemo.test.databinding.ItemListBinding
 import com.cinemo.test.domain.Item
 
@@ -23,7 +24,10 @@ class ItemAdapter : ListAdapter<Item, ItemAdapter.ItemViewHolder>(DiffCallback()
     class ItemViewHolder(private val binding: ItemListBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Item) {
             binding.title.text = item.title
-            // Load thumbnail with an image loading library like Glide or Picasso
+            binding.subtitle.text = item.subtitle
+            Glide.with(itemView.context)
+                .load(item.thumbnail)
+                .into(binding.thumbnail)
         }
     }
 

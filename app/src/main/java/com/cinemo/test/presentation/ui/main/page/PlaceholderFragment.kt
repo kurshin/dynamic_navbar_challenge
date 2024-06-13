@@ -1,17 +1,15 @@
 package com.cinemo.test.presentation.ui.main.page
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cinemo.test.databinding.FragmentMainBinding
 import com.cinemo.test.domain.Item
-import com.cinemo.test.presentation.ui.main.page.ItemAdapter
-import com.cinemo.test.presentation.ui.main.page.PageViewModel
 
 class PlaceholderFragment : Fragment() {
 
@@ -45,8 +43,14 @@ class PlaceholderFragment : Fragment() {
 
         // Retrieve the item from arguments and set it to the ViewModel
         arguments?.getSerializable(ARG_ITEM)?.let {
-            Log.i("1111", "it = $it")
-            pageViewModel.setItem(it as Item)
+            val media = it as Item
+//            if (media.content?.displayStyle == "grid") {
+//                recyclerView.layoutManager = GridLayoutManager(context, 2)
+//            } else {
+//                recyclerView.layoutManager = LinearLayoutManager(context)
+//            }
+
+            pageViewModel.setItem(media)
         }
 
         return root
