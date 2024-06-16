@@ -1,21 +1,22 @@
 package com.cinemo.test.presentation.ui.main.page
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.cinemo.test.R
-import com.cinemo.test.databinding.FragmentMainBinding
+import com.cinemo.test.databinding.FragmentPageBinding
 import com.cinemo.test.domain.GRID_TYPE
 import com.cinemo.test.domain.Item
 
-class PlaceholderFragment : Fragment() {
+class PageFragment : Fragment() {
 
-    private var _binding: FragmentMainBinding? = null
+    private var _binding: FragmentPageBinding? = null
+    private val viewModel:PageViewModel by viewModels()
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +28,7 @@ class PlaceholderFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentMainBinding.inflate(inflater, container, false)
+        _binding = FragmentPageBinding.inflate(inflater, container, false)
         val root = binding.root
 
         val recyclerView = binding.recyclerView
@@ -42,14 +43,23 @@ class PlaceholderFragment : Fragment() {
             }
 
             val adapter = ItemAdapter(media.content?.displayStyle ?: GRID_TYPE) { item ->
-//                val fragment = newInstance(item) // Pass item ID or other data as needed
-//                parentFragmentManager.beginTransaction()
-//                    .replace(R.id.view_pager, fragment)
-//                    .addToBackStack(null)
-//                    .commit()
+                viewModel.setItem(item)
             }
+
             recyclerView.adapter = adapter
             adapter.submitList(it.content?.items ?: emptyList())
+
+            viewModel.item.observe(viewLifecycleOwner) { item ->
+                val subitems = item.content?.items ?: emptyList()
+                if (subitems.isEmpty()) {
+                    Toast.makeText(requireContext(), "No items", Toast.LENGTH_SHORT).show()
+                } else {
+//                    val fragment = newInstance(item)
+//                    parentFragmentManager.beginTransaction()
+//                        .add(R.id.pageContainer, fragment)
+//                        .commit()
+                }
+            }
         }
 
         return root
@@ -59,8 +69,8 @@ class PlaceholderFragment : Fragment() {
 
         private const val ARG_ITEM = "item"
         @JvmStatic
-        fun newInstance(item: Item): PlaceholderFragment {
-            return PlaceholderFragment().apply {
+        fun newInstance(item: Item): PageFragment {
+            return PageFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(ARG_ITEM, item)
                 }
