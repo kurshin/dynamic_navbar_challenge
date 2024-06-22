@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.cinemo.test.data.MediaDataRepository
 import com.cinemo.test.domain.MediaData
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.cinemo.data_parser.Result
+import kotlinx.coroutines.delay
 
 class MainViewModel(private val repository: MediaDataRepository) : ViewModel() {
 
@@ -17,8 +17,9 @@ class MainViewModel(private val repository: MediaDataRepository) : ViewModel() {
     val mediaData: LiveData<Result<MediaData>> get() = _mediaData
 
     fun loadMediaData(fileName: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             val result = repository.getMediaData(fileName)
+            delay(1000)
             _mediaData.postValue(result)
         }
     }

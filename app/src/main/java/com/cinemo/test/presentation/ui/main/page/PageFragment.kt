@@ -7,8 +7,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.cinemo.test.R
 import com.cinemo.test.databinding.FragmentPageBinding
 import com.cinemo.test.domain.GRID_TYPE
 import com.cinemo.test.domain.Item
@@ -54,6 +57,10 @@ class PageFragment : Fragment() {
                 if (subitems.isEmpty()) {
                     Toast.makeText(requireContext(), "No items", Toast.LENGTH_SHORT).show()
                 } else {
+                    val navController = requireActivity().findNavController(R.id.nav_host_fragment_activity_main)
+                    val bnd = Bundle().apply { putSerializable(ARG_ITEM, item) }
+                    navController.navigate("/add".hashCode(), bnd)
+
 //                    val fragment = newInstance(item)
 //                    parentFragmentManager.beginTransaction()
 //                        .add(R.id.pageContainer, fragment)
@@ -67,7 +74,7 @@ class PageFragment : Fragment() {
 
     companion object {
 
-        private const val ARG_ITEM = "item"
+        const val ARG_ITEM = "item"
         @JvmStatic
         fun newInstance(item: Item): PageFragment {
             return PageFragment().apply {

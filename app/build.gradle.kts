@@ -52,6 +52,8 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation(project(mapOf("path" to ":data_parser")))
     implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     testImplementation("junit:junit:4.13.2")
