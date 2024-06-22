@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
@@ -22,10 +23,11 @@ class PageFragment : Fragment() {
     private val navController:NavController by lazy { findNavController() }
     private val binding get() = _binding!!
 
+    @Suppress("DEPRECATION")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         _binding = FragmentPageBinding.inflate(inflater, container, false)
         val root = binding.root
@@ -51,28 +53,22 @@ class PageFragment : Fragment() {
                     Toast.makeText(requireContext(), "No items", Toast.LENGTH_SHORT).show()
                 } else {
                     val bnd = Bundle().apply { putSerializable(ARG_ITEM, item) }
-                    navController.navigate("/add".hashCode(), bnd)
+                    navController.navigate(NAV_PATH_ADD.hashCode(), bnd)
                 }
             }
 
             recyclerView.adapter = adapter
             adapter.submitList(it.content?.items ?: emptyList())
+
+            (activity as? AppCompatActivity)?.supportActionBar?.title = it.title
         }
 
         return root
     }
 
     companion object {
-
         const val ARG_ITEM = "item"
-        @JvmStatic
-        fun newInstance(item: Item): PageFragment {
-            return PageFragment().apply {
-                arguments = Bundle().apply {
-                    putSerializable(ARG_ITEM, item)
-                }
-            }
-        }
+        const val NAV_PATH_ADD = "/add"
     }
 
     override fun onDestroyView() {

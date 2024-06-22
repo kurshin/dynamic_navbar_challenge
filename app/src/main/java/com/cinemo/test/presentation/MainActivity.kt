@@ -28,6 +28,7 @@ import com.cinemo.test.R
 import com.cinemo.test.domain.Item
 import com.cinemo.test.domain.MediaData
 import com.cinemo.test.presentation.ui.main.page.PageFragment
+import com.cinemo.test.presentation.ui.main.page.PageFragment.Companion.NAV_PATH_ADD
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -141,7 +142,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            fragment<PageFragment>("/add".hashCode()) {
+            fragment<PageFragment>(NAV_PATH_ADD.hashCode()) {
                 argument(PageFragment.ARG_ITEM) {
                     type = NavType.SerializableType(Item::class.java)
                 }
