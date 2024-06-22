@@ -60,7 +60,7 @@ class ItemAdapter(
     inner class ItemViewHolder(private val binding: ItemListBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Item) {
-            binding.title.text = item.title
+            binding.title.text = "${item.title} (${item.content?.items?.size ?: 0})"
             binding.subtitle.text = item.subtitle
             Glide.with(itemView.context)
                 .load(item.thumbnail)
@@ -74,7 +74,7 @@ class ItemAdapter(
 
     inner class ItemVerticalViewHolder(private val binding: ItemListVerticalBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Item) {
-            binding.title.text = item.title
+            binding.title.text = "${item.title} (${item.content?.items?.size ?: 0})"
             binding.subtitle.text = item.subtitle
             Glide.with(itemView.context)
                 .load(item.thumbnail)
